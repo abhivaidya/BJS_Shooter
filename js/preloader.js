@@ -8,6 +8,7 @@ var Preloader = (function () {
         this._loader.onFinish = this._onFinish.bind(this);
     }
     Preloader.prototype.loadAssets = function () {
+        this._addMesh('', 'test');
         this._loader.load();
     };
     Preloader.prototype._onFinish = function () {

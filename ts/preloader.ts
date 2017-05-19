@@ -21,7 +21,7 @@ class Preloader
     {
         //this._addMesh('', 'environment');
         //this._addMesh('', 'tiles');
-        //this._addMesh('', 'buildings');
+        this._addMesh('', 'test');
         this._loader.load();
     }
 

@@ -109,6 +109,15 @@ class Game
         let loader = new Preloader(this);
         loader.callback = this.run.bind(this);
         loader.loadAssets();
+
+        let lensEffect = new BABYLON.LensRenderingPipeline('lens', {
+    		edge_blur: 1.0,
+    		chromatic_aberration: 1.0,
+    		distortion: 1.0,
+    		dof_focus_distance: 50
+    	}, this.scene, 1.0);
+
+        this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('lens', camera);
     }
 
     private run()
@@ -173,6 +182,15 @@ class Game
             enemy.parentMesh.id = Utilities.GUID();
             enemy.parentMesh.position.z = Math.random() * 150;
             enemy.parentMesh.position.x = Math.round(Math.random()) > 0.5 ? this.enemyXRange:-this.enemyXRange;
+        }
+
+        for (let j = 0; j < 10; j++)
+        {
+            let rock = this.createAsset('rock0' + Math.round(Math.random() * 2), Game.INSTANCE, 'test');
+            rock.scaling = new BABYLON.Vector3(4, 4, 4);
+            rock.position.x = 9;
+            rock.position.z = j * 10;
+            //rock.rotation.y = Math.PI/2;
         }
     }
 
