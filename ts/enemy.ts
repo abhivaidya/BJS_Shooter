@@ -24,6 +24,7 @@ class Enemy
 
         this.parentMesh = BABYLON.MeshBuilder.CreateBox("parentMesh", {width:1, height:1, depth:1}, scene);
         this.parentMesh.isVisible = false;
+        this.parentMesh.name = "enemy";
 
         var faceColors = new Array(6);
         faceColors[0] = new BABYLON.Color4(1, 0, 0, 1);
@@ -44,6 +45,7 @@ class Enemy
         this.mesh = BABYLON.MeshBuilder.CreateBox('mesh', options, scene);
         this.mesh.parent = this.parentMesh;
         this.mesh.position.y = 1;
+        this.mesh.checkCollisions = true;
     }
 
     move()
@@ -53,15 +55,7 @@ class Enemy
     		if (!this.bullets[i] || this.bullets[i] == undefined)
                 continue;
 
-    		this.bullets[i].position.x += Math.sin(this.bullets[i].rotation.y) * this.bulletSpeed;
-    		this.bullets[i].position.z += Math.cos(this.bullets[i].rotation.y) * this.bulletSpeed;
-
-            if(this.bullets[i].position.x > this.bulletRange || this.bullets[i].position.x < -this.bulletRange ||
-                this.bullets[i].position.z > (this.bulletRange + this.bullets[i].startZPos))
-            {
-                let bullet = this.bullets.splice(i, 1);
-                (bullet[0] as BABYLON.Mesh).dispose();
-            }
+    		this.bullets[i].update();
     	}
 
         if(this.canShoot)
@@ -90,14 +84,23 @@ class Enemy
 
         let bulletId = this.bullets.length + 1;
 
-		this.bullets[bulletId] = BABYLON.Mesh.CreateSphere('bullet', 3, 0.5, this.sceneRef);
-		this.bullets[bulletId].position = this.parentMesh.getAbsolutePosition().clone();
-		this.bullets[bulletId].position.y = 1;
-		this.bullets[bulletId].rotation = this.mesh.rotation.clone();
-		this.bullets[bulletId].startZPos = this.parentMesh.position.z;
+        this.bullets[bulletId] = new Bullet(this.sceneRef, this, "straight");
+        this.bullets[bulletId].id = Utilities.GUID();
+    }
 
-		this.bullets[bulletId].material = new BABYLON.StandardMaterial('texture1', this.sceneRef);
-		this.bullets[bulletId].material.diffuseColor = new BABYLON.Color3(3, 0, 0);
+    disposeBulletWithID(id:string)
+    {
+        for (var i = 0; i < this.bullets.length; i++)
+        {
+            if (!this.bullets[i] || this.bullets[i] == undefined)
+                continue;
+
+            if(this.bullets[i].id == id)
+            {
+                let bullet = this.bullets.splice(i, 1);
+                (bullet[0].mesh as BABYLON.Mesh).dispose();
+    		}
+    	}
     }
 
     reduceHealth (damage:number)

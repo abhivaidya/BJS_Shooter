@@ -13,6 +13,7 @@ var Player = (function () {
         this.rotateRight = false;
         this.parentMesh = BABYLON.MeshBuilder.CreateBox("parentMesh", { width: 1, height: 1, depth: 1 }, scene);
         this.parentMesh.isVisible = false;
+        this.parentMesh.name = "player";
         var faceColors = new Array(6);
         faceColors[0] = new BABYLON.Color4(1, 0, 0, 1);
         faceColors[1] = new BABYLON.Color4(0, 1, 0, 1);
@@ -25,6 +26,7 @@ var Player = (function () {
         this.mesh = BABYLON.MeshBuilder.CreateBox('mesh', options, scene);
         this.mesh.parent = this.parentMesh;
         this.mesh.position.y = 1;
+        this.mesh.checkCollisions = true;
     }
     Player.prototype.move = function () {
         if (this.moveRight) {
@@ -51,31 +53,31 @@ var Player = (function () {
         for (var i = 0; i < this.bullets.length; i++) {
             if (!this.bullets[i] || this.bullets[i] == undefined)
                 continue;
-            this.bullets[i].position.x += Math.sin(this.bullets[i].rotation.y) * this.bulletSpeed;
-            this.bullets[i].position.z += Math.cos(this.bullets[i].rotation.y) * this.bulletSpeed;
-            if (this.bullets[i].position.x > this.bulletRange || this.bullets[i].position.x < -this.bulletRange ||
-                this.bullets[i].position.z > (this.bulletRange + this.bullets[i].startZPos)) {
-                var bullet = this.bullets.splice(i, 1);
-                bullet[0].dispose();
-            }
-            for (var j = 0; j < Game.getInstance().enemies.length; j++) {
-                if (this.bullets[i] != undefined && this.bullets[i].intersectsMesh(Game.getInstance().enemies[j].mesh, false)) {
-                    var bullet = this.bullets.splice(i, 1);
-                    bullet[0].dispose();
-                    Game.getInstance().enemies[j].reduceHealth(this.bulletDamage);
-                }
-            }
+            this.bullets[i].update();
         }
     };
     Player.prototype.shoot = function (scene) {
         var bulletId = this.bullets.length + 1;
-        this.bullets[bulletId] = BABYLON.Mesh.CreateSphere('bullet', 3, 0.5, scene);
-        this.bullets[bulletId].position = this.parentMesh.getAbsolutePosition().clone();
-        this.bullets[bulletId].position.y = 1;
-        this.bullets[bulletId].rotation = this.mesh.rotation.clone();
-        this.bullets[bulletId].startZPos = this.parentMesh.position.z;
-        this.bullets[bulletId].material = new BABYLON.StandardMaterial('texture1', scene);
-        this.bullets[bulletId].material.diffuseColor = new BABYLON.Color3(3, 2, 0);
+        if (this.rotateLeft) {
+            this.bullets[bulletId] = new Bullet(scene, this, "left");
+        }
+        else if (this.rotateRight) {
+            this.bullets[bulletId] = new Bullet(scene, this, "right");
+        }
+        else {
+            this.bullets[bulletId] = new Bullet(scene, this, "straight");
+        }
+        this.bullets[bulletId].id = Utilities.GUID();
+    };
+    Player.prototype.disposeBulletWithID = function (id) {
+        for (var i = 0; i < this.bullets.length; i++) {
+            if (!this.bullets[i] || this.bullets[i] == undefined)
+                continue;
+            if (this.bullets[i].id == id) {
+                var bullet = this.bullets.splice(i, 1);
+                bullet[0].mesh.dispose();
+            }
+        }
     };
     return Player;
 }());

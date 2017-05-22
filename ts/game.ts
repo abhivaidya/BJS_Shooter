@@ -8,7 +8,7 @@ class Game
     public assets: Array<BABYLON.AbstractMesh>;
     public scene: BABYLON.Scene;
 
-    private player:Player;
+    public player:Player;
     public enemies: Array<Enemy>;
 
     private enemyXRange = 10;
@@ -68,6 +68,7 @@ class Game
         this.scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
         this.scene.fogDensity = 0.02;
         this.scene.fogColor = new BABYLON.Color3(0.8, 0.83, 0.8);
+        this.scene.collisionsEnabled = true;
         /*
         let camera = new BABYLON.ArcRotateCamera('FollowCam', 0, 0, 0, new BABYLON.Vector3(0, 0, 0), this.scene);
         camera.attachControl(this.engine.getRenderingCanvas());
@@ -110,6 +111,8 @@ class Game
         loader.callback = this.run.bind(this);
         loader.loadAssets();
 
+        /*
+        //Depth of field effect
         let lensEffect = new BABYLON.LensRenderingPipeline('lens', {
     		edge_blur: 1.0,
     		chromatic_aberration: 1.0,
@@ -118,6 +121,7 @@ class Game
     	}, this.scene, 1.0);
 
         this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('lens', camera);
+        */
     }
 
     private run()
@@ -190,7 +194,8 @@ class Game
             rock.scaling = new BABYLON.Vector3(4, 4, 4);
             rock.position.x = 9;
             rock.position.z = j * 10;
-            //rock.rotation.y = Math.PI/2;
+            //rock.rotation.y = Math.PI * Math.random();
+            rock.checkCollisions = true;
         }
     }
 
@@ -270,6 +275,7 @@ class Game
         if (evt.keyCode == 38)
         {
             //Up
+
             this.player.shoot(this.scene);
         }
     }

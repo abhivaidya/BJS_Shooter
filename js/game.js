@@ -28,6 +28,7 @@ var Game = (function () {
         this.scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
         this.scene.fogDensity = 0.02;
         this.scene.fogColor = new BABYLON.Color3(0.8, 0.83, 0.8);
+        this.scene.collisionsEnabled = true;
         var camera = new BABYLON.FollowCamera("FollowCam", BABYLON.Vector3.Zero(), this.scene);
         camera.radius = 20;
         camera.heightOffset = 28;
@@ -48,13 +49,6 @@ var Game = (function () {
         var loader = new Preloader(this);
         loader.callback = this.run.bind(this);
         loader.loadAssets();
-        var lensEffect = new BABYLON.LensRenderingPipeline('lens', {
-            edge_blur: 1.0,
-            chromatic_aberration: 1.0,
-            distortion: 1.0,
-            dof_focus_distance: 50
-        }, this.scene, 1.0);
-        this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('lens', camera);
     };
     Game.prototype.run = function () {
         var _this = this;
@@ -106,6 +100,7 @@ var Game = (function () {
             rock.scaling = new BABYLON.Vector3(4, 4, 4);
             rock.position.x = 9;
             rock.position.z = j * 10;
+            rock.checkCollisions = true;
         }
     };
     Game.prototype.createAsset = function (name, mode, newName) {
