@@ -179,6 +179,7 @@ var Game = (function () {
             if (this.enemies[i].parentMesh.id == enemyID) {
                 var enemy = this.enemies.splice(i, 1);
                 enemy[0].parentMesh.dispose();
+                enemy = null;
             }
         }
     };

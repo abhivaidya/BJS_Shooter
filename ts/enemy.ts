@@ -99,6 +99,7 @@ class Enemy
             {
                 let bullet = this.bullets.splice(i, 1);
                 (bullet[0].mesh as BABYLON.Mesh).dispose();
+                bullet = null;
     		}
     	}
     }

@@ -63,6 +63,7 @@ class Grenade
         if(this.pointPlotter < this.points.length - 1)
         {
             this.pointPlotter++;
+
             this.mesh.position.x = this.points[this.pointPlotter].x;
             this.mesh.position.y = this.points[this.pointPlotter].y;
             this.mesh.position.z = this.points[this.pointPlotter].z;

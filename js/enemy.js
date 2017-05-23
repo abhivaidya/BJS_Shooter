@@ -64,6 +64,7 @@ var Enemy = (function () {
             if (this.bullets[i].id == id) {
                 var bullet = this.bullets.splice(i, 1);
                 bullet[0].mesh.dispose();
+                bullet = null;
             }
         }
     };

@@ -93,6 +93,7 @@ var Player = (function () {
             if (this.bullets[i].id == id) {
                 var bullet = this.bullets.splice(i, 1);
                 bullet[0].mesh.dispose();
+                bullet = null;
             }
         }
     };
@@ -103,6 +104,7 @@ var Player = (function () {
             if (this.grenades[i].id == id) {
                 var grenade = this.grenades.splice(i, 1);
                 grenade[0].mesh.dispose();
+                grenade = null;
             }
         }
     };

@@ -148,6 +148,7 @@ class Player
             {
                 let bullet = this.bullets.splice(i, 1);
                 (bullet[0].mesh as BABYLON.Mesh).dispose();
+                bullet = null;
     		}
     	}
     }
@@ -163,6 +164,7 @@ class Player
             {
                 let grenade = this.grenades.splice(i, 1);
                 (grenade[0].mesh as BABYLON.Mesh).dispose();
+                grenade = null;
     		}
     	}
     }

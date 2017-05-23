@@ -329,6 +329,7 @@ class Game
             {
                 let enemy = this.enemies.splice(i, 1);
                 (enemy[0].parentMesh as BABYLON.Mesh).dispose();
+                enemy = null;
             }
         }
     }
