@@ -1,10 +1,8 @@
 var Player = (function () {
     function Player(scene) {
         this.bullets = [];
+        this.grenades = [];
         this.speed = 0.05;
-        this.bulletSpeed = 1;
-        this.bulletRange = 100;
-        this.bulletDamage = 10;
         this.moveLeft = false;
         this.moveRight = false;
         this.moveForward = false;
@@ -14,6 +12,7 @@ var Player = (function () {
         this.parentMesh = BABYLON.MeshBuilder.CreateBox("parentMesh", { width: 1, height: 1, depth: 1 }, scene);
         this.parentMesh.isVisible = false;
         this.parentMesh.name = "player";
+        this.sceneRef = scene;
         var faceColors = new Array(6);
         faceColors[0] = new BABYLON.Color4(1, 0, 0, 1);
         faceColors[1] = new BABYLON.Color4(0, 1, 0, 1);
@@ -55,19 +54,37 @@ var Player = (function () {
                 continue;
             this.bullets[i].update();
         }
+        for (var j = 0; j < this.grenades.length; j++) {
+            if (!this.grenades[j] || this.grenades[j] == undefined)
+                continue;
+            this.grenades[j].update();
+        }
     };
-    Player.prototype.shoot = function (scene) {
+    Player.prototype.shoot = function () {
         var bulletId = this.bullets.length + 1;
         if (this.rotateLeft) {
-            this.bullets[bulletId] = new Bullet(scene, this, "left");
+            this.bullets[bulletId] = new Bullet(this.sceneRef, this, "left");
         }
         else if (this.rotateRight) {
-            this.bullets[bulletId] = new Bullet(scene, this, "right");
+            this.bullets[bulletId] = new Bullet(this.sceneRef, this, "right");
         }
         else {
-            this.bullets[bulletId] = new Bullet(scene, this, "straight");
+            this.bullets[bulletId] = new Bullet(this.sceneRef, this, "straight");
         }
         this.bullets[bulletId].id = Utilities.GUID();
+    };
+    Player.prototype.throwGrenade = function () {
+        var grenadeId = this.grenades.length + 1;
+        if (this.rotateLeft) {
+            this.grenades[grenadeId] = new Grenade(this.sceneRef, this, "left");
+        }
+        else if (this.rotateRight) {
+            this.grenades[grenadeId] = new Grenade(this.sceneRef, this, "right");
+        }
+        else {
+            this.grenades[grenadeId] = new Grenade(this.sceneRef, this, "straight");
+        }
+        this.grenades[grenadeId].id = Utilities.GUID();
     };
     Player.prototype.disposeBulletWithID = function (id) {
         for (var i = 0; i < this.bullets.length; i++) {
@@ -76,6 +93,16 @@ var Player = (function () {
             if (this.bullets[i].id == id) {
                 var bullet = this.bullets.splice(i, 1);
                 bullet[0].mesh.dispose();
+            }
+        }
+    };
+    Player.prototype.disposeGrenadeWithID = function (id) {
+        for (var i = 0; i < this.grenades.length; i++) {
+            if (!this.grenades[i] || this.grenades[i] == undefined)
+                continue;
+            if (this.grenades[i].id == id) {
+                var grenade = this.grenades.splice(i, 1);
+                grenade[0].mesh.dispose();
             }
         }
     };

@@ -1,2 +1,2 @@
-# BJS_SS
-Test side scroller using BabylonJS
+# BJS_Simple Shooter
+Simple shooter made using BabylonJS

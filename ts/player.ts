@@ -3,12 +3,12 @@ class Player
     public mesh;
     public parentMesh;
 
+    private sceneRef:BABYLON.Scene;
+
     private bullets:Array<Bullet> = [];
+    private grenades:Array<Grenade> = [];
 
     private speed = 0.05;
-    private bulletSpeed = 1;
-    private bulletRange = 100;
-    private bulletDamage = 10;
 
     public moveLeft = false;
     public moveRight = false;
@@ -23,6 +23,8 @@ class Player
         this.parentMesh = BABYLON.MeshBuilder.CreateBox("parentMesh", {width:1, height:1, depth:1}, scene);
         this.parentMesh.isVisible = false;
         this.parentMesh.name = "player";
+
+        this.sceneRef = scene;
 
         var faceColors = new Array(6);
         faceColors[0] = new BABYLON.Color4(1, 0, 0, 1);
@@ -85,26 +87,54 @@ class Player
 
             this.bullets[i].update();
     	}
+
+        for (var j = 0; j < this.grenades.length; j++)
+        {
+            if (!this.grenades[j] || this.grenades[j] == undefined)
+                continue;
+
+            this.grenades[j].update();
+    	}
     }
 
-    shoot(scene:BABYLON.Scene)
+    shoot()
     {
         let bulletId = this.bullets.length + 1;
 
         if(this.rotateLeft)
         {
-		    this.bullets[bulletId] = new Bullet(scene, this, "left");
+		    this.bullets[bulletId] = new Bullet(this.sceneRef, this, "left");
         }
         else if(this.rotateRight)
         {
-            this.bullets[bulletId] = new Bullet(scene, this, "right");
+            this.bullets[bulletId] = new Bullet(this.sceneRef, this, "right");
         }
         else
         {
-            this.bullets[bulletId] = new Bullet(scene, this, "straight");
+            this.bullets[bulletId] = new Bullet(this.sceneRef, this, "straight");
         }
 
         this.bullets[bulletId].id = Utilities.GUID();
+    }
+
+    throwGrenade()
+    {
+        let grenadeId = this.grenades.length + 1;
+
+        if(this.rotateLeft)
+        {
+		    this.grenades[grenadeId] = new Grenade(this.sceneRef, this, "left");
+        }
+        else if(this.rotateRight)
+        {
+            this.grenades[grenadeId] = new Grenade(this.sceneRef, this, "right");
+        }
+        else
+        {
+            this.grenades[grenadeId] = new Grenade(this.sceneRef, this, "straight");
+        }
+
+        this.grenades[grenadeId].id = Utilities.GUID();
     }
 
     disposeBulletWithID(id:string)
@@ -118,6 +148,21 @@ class Player
             {
                 let bullet = this.bullets.splice(i, 1);
                 (bullet[0].mesh as BABYLON.Mesh).dispose();
+    		}
+    	}
+    }
+
+    disposeGrenadeWithID(id:string)
+    {
+        for (var i = 0; i < this.grenades.length; i++)
+        {
+            if (!this.grenades[i] || this.grenades[i] == undefined)
+                continue;
+
+            if(this.grenades[i].id == id)
+            {
+                let grenade = this.grenades.splice(i, 1);
+                (grenade[0].mesh as BABYLON.Mesh).dispose();
     		}
     	}
     }

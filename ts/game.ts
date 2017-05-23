@@ -275,8 +275,13 @@ class Game
         if (evt.keyCode == 38)
         {
             //Up
+            //this.player.shoot();
+        }
 
-            this.player.shoot(this.scene);
+        if (evt.keyCode == 40)
+        {
+            //Down
+            //this.player.throwGrenade();
         }
     }
 
@@ -301,6 +306,18 @@ class Game
             //Left or Right
             this.player.rotateLeft = false;
             this.player.rotateRight = false;
+        }
+
+        if (evt.keyCode == 38)
+        {
+            //Up
+            this.player.shoot();
+        }
+
+        if (evt.keyCode == 40)
+        {
+            //Down
+            this.player.throwGrenade();
         }
     }
 

@@ -2,7 +2,6 @@ class Bullet
 {
     public id = '';
 
-    private parentMesh;
     private parent;
 
     public mesh:BABYLON.Mesh;
@@ -19,12 +18,11 @@ class Bullet
     constructor(scene:BABYLON.Scene, parent:any, direction:string)
     {
         this.sceneRef = scene;
-        this.parentMesh = parent.parentMesh;
         this.entityDirection = direction;
         this.parent = parent;
 
         this.mesh = BABYLON.Mesh.CreateSphere('bullet', 3, 0.5, scene);
-		this.mesh.position = this.parentMesh.getAbsolutePosition().clone();
+		this.mesh.position = this.parent.parentMesh.getAbsolutePosition().clone();
 		this.mesh.position.y = 1;
 
         this.mesh.material = new BABYLON.StandardMaterial('texture1', scene);
@@ -32,16 +30,18 @@ class Bullet
 
         if(this.entityDirection == "left")
         {
-            this.newVec = new BABYLON.Vector3(this.parentMesh.position.x - this.limit, this.parentMesh.position.y, this.parentMesh.position.z + this.limit);
+            this.newVec = new BABYLON.Vector3(this.parent.parentMesh.position.x - this.limit, this.parent.parentMesh.position.y, this.parent.parentMesh.position.z + this.limit);
         }
         else if(this.entityDirection == "right")
         {
-            this.newVec = new BABYLON.Vector3(this.parentMesh.position.x + this.limit, this.parentMesh.position.y, this.parentMesh.position.z + this.limit);
+            this.newVec = new BABYLON.Vector3(this.parent.parentMesh.position.x + this.limit, this.parent.parentMesh.position.y, this.parent.parentMesh.position.z + this.limit);
         }
         else if(this.entityDirection == "straight")
         {
             if(this.parent instanceof Player)
-                this.newVec = new BABYLON.Vector3(this.parentMesh.position.x, this.parentMesh.position.y, this.parentMesh.position.z + this.limit);
+            {
+                this.newVec = new BABYLON.Vector3(this.parent.parentMesh.position.x, this.parent.parentMesh.position.y, this.parent.parentMesh.position.z + this.limit);
+            }
             else if(this.parent instanceof Enemy)
             {
                 if(this.parent.parentMesh.position.x < Game.getInstance().player.parentMesh.position.x)
@@ -65,7 +65,7 @@ class Bullet
         	this.moveToTarget(this.mesh, this.newVec);
         }
 
-        if(this.parentMesh.name == "player")
+        if(this.parent.parentMesh.name == "player")
         {
             for (var j = 0; j < Game.getInstance().enemies.length; j++)
             {
@@ -77,7 +77,7 @@ class Bullet
                 }
             }
         }
-        else if(this.parentMesh.name == "enemy")
+        else if(this.parent.parentMesh.name == "enemy")
         {
 
         }

@@ -150,7 +150,8 @@ var Game = (function () {
             this.player.rotateRight = true;
         }
         if (evt.keyCode == 38) {
-            this.player.shoot(this.scene);
+        }
+        if (evt.keyCode == 40) {
         }
     };
     Game.prototype.onKeyUp = function (evt) {
@@ -165,6 +166,12 @@ var Game = (function () {
         if (evt.keyCode == 37 || evt.keyCode == 39) {
             this.player.rotateLeft = false;
             this.player.rotateRight = false;
+        }
+        if (evt.keyCode == 38) {
+            this.player.shoot();
+        }
+        if (evt.keyCode == 40) {
+            this.player.throwGrenade();
         }
     };
     Game.prototype.disposeEnemy = function (enemyID) {

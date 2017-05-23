@@ -5,23 +5,23 @@ var Bullet = (function () {
         this.speed = 1;
         this.damage = 10;
         this.sceneRef = scene;
-        this.parentMesh = parent.parentMesh;
         this.entityDirection = direction;
         this.parent = parent;
         this.mesh = BABYLON.Mesh.CreateSphere('bullet', 3, 0.5, scene);
-        this.mesh.position = this.parentMesh.getAbsolutePosition().clone();
+        this.mesh.position = this.parent.parentMesh.getAbsolutePosition().clone();
         this.mesh.position.y = 1;
         this.mesh.material = new BABYLON.StandardMaterial('texture1', scene);
         this.mesh.material.diffuseColor = new BABYLON.Color3(3, 2, 0);
         if (this.entityDirection == "left") {
-            this.newVec = new BABYLON.Vector3(this.parentMesh.position.x - this.limit, this.parentMesh.position.y, this.parentMesh.position.z + this.limit);
+            this.newVec = new BABYLON.Vector3(this.parent.parentMesh.position.x - this.limit, this.parent.parentMesh.position.y, this.parent.parentMesh.position.z + this.limit);
         }
         else if (this.entityDirection == "right") {
-            this.newVec = new BABYLON.Vector3(this.parentMesh.position.x + this.limit, this.parentMesh.position.y, this.parentMesh.position.z + this.limit);
+            this.newVec = new BABYLON.Vector3(this.parent.parentMesh.position.x + this.limit, this.parent.parentMesh.position.y, this.parent.parentMesh.position.z + this.limit);
         }
         else if (this.entityDirection == "straight") {
-            if (this.parent instanceof Player)
-                this.newVec = new BABYLON.Vector3(this.parentMesh.position.x, this.parentMesh.position.y, this.parentMesh.position.z + this.limit);
+            if (this.parent instanceof Player) {
+                this.newVec = new BABYLON.Vector3(this.parent.parentMesh.position.x, this.parent.parentMesh.position.y, this.parent.parentMesh.position.z + this.limit);
+            }
             else if (this.parent instanceof Enemy) {
                 if (this.parent.parentMesh.position.x < Game.getInstance().player.parentMesh.position.x) {
                     this.newVec = new BABYLON.Vector3(Game.getInstance().player.parentMesh.position.x, Game.getInstance().player.parentMesh.position.y, Game.getInstance().player.parentMesh.position.z);
@@ -36,7 +36,7 @@ var Bullet = (function () {
         if (!this.facePoint(this.mesh, this.newVec)) {
             this.moveToTarget(this.mesh, this.newVec);
         }
-        if (this.parentMesh.name == "player") {
+        if (this.parent.parentMesh.name == "player") {
             for (var j = 0; j < Game.getInstance().enemies.length; j++) {
                 if (this.mesh.intersectsMesh(Game.getInstance().enemies[j].mesh, false)) {
                     this.parent.disposeBulletWithID(this.id);
@@ -44,7 +44,7 @@ var Bullet = (function () {
                 }
             }
         }
-        else if (this.parentMesh.name == "enemy") {
+        else if (this.parent.parentMesh.name == "enemy") {
         }
     };
     Bullet.prototype.facePoint = function (rotatingObject, pointToRotateTo) {
